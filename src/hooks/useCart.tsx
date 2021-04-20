@@ -34,12 +34,12 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const addProduct = async (productId: number) => {
     try {
-      const updateCart = [...cart]
-      const productExist = updateCart.find(product => product.id === productId)
+      const updatedCart = [...cart]
+      const productExist = updatedCart.find(product => product.id === productId)
 
-      const stok = await api.get(`/stock/${productId}`)
+      const stock = await api.get(`/stock/${productId}`)
 
-      const stockAmount = stok.data.amount
+      const stockAmount = stock.data.amount
       const currentAmount = productExist ? productExist.amount : 0
       const amount = currentAmount + 1
 
@@ -57,11 +57,11 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           ...product.data,
           amount: 1,
         }
-        updateCart.push(newProduct)
+        updatedCart.push(newProduct)
       }
 
-      setCart(updateCart)
-      localStorage.setItem('@RocketShoes:cart', JSON.stringify(updateCart))
+      setCart(updatedCart)
+      localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
 
     } catch {
       toast.error('Erro na adição do produto');
@@ -70,14 +70,14 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      const updateCart = [...cart]
-      const productIndex = updateCart.findIndex(product => product.id === productId)
+      const updatedCart = [...cart]
+      const productIndex = updatedCart.findIndex(product => product.id === productId)
 
       if (productIndex >= 0) {
-        updateCart.splice(productIndex, 1)
+        updatedCart.splice(productIndex, 1)
 
-        setCart(updateCart)
-        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updateCart))
+        setCart(updatedCart)
+        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
 
       } else {
         throw Error()
@@ -97,21 +97,21 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         return
       }
 
-      const stok = await api.get(`/stock/${productId}`)
-      const stockAmount = stok.data.amount
+      const stock = await api.get(`/stock/${productId}`)
+      const stockAmount = stock.data.amount
 
       if (amount > stockAmount) {
         toast.error('Quantidade solicitada fora de estoque');
         return
       }
 
-      const updateCart = [...cart]
-      const productExist = updateCart.find(product => product.id === productId)
+      const updatedCart = [...cart]
+      const productExist = updatedCart.find(product => product.id === productId)
 
       if (productExist) {
         productExist.amount = amount
-        setCart(updateCart)
-        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updateCart))
+        setCart(updatedCart)
+        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
       } else {
         throw Error()
       }
